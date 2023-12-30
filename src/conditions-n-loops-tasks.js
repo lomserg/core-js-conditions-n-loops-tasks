@@ -97,10 +97,12 @@ function canQueenCaptureKing(queen, king) {
  *  2, 2, 5   => false
  *  3, 0, 3   => false
  */
-function isIsoscelesTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isIsoscelesTriangle(a, b, c) {
+  if (a === 0 || b === 0 || c === 0) return false;
+  if (a + b < c || a + c < b || b + c < a) return false;
+  if (a === b || a === c || b === c) return true;
+  return false;
 }
-
 /**
  * Converts a number to Roman numerals. The number will be between 1 and 39.
  * In this task, the use of methods of the String and Array classes is not allowed.
@@ -115,8 +117,36 @@ function isIsoscelesTriangle(/* a, b, c */) {
  *  10  => X
  *  26  => XXVI
  */
-function convertToRomanNumerals(/* num */) {
-  throw new Error('Not implemented');
+function convertToRomanNumerals(num) {
+  let inputNum = num;
+  const romanValues = [
+    { value: 1000, numeral: 'M' },
+    { value: 900, numeral: 'CM' },
+    { value: 500, numeral: 'D' },
+    { value: 400, numeral: 'CD' },
+    { value: 100, numeral: 'C' },
+    { value: 90, numeral: 'XC' },
+    { value: 50, numeral: 'L' },
+    { value: 40, numeral: 'XL' },
+    { value: 10, numeral: 'X' },
+    { value: 9, numeral: 'IX' },
+    { value: 8, numeral: 'VIII' },
+    { value: 7, numeral: 'VII' },
+    { value: 6, numeral: 'VI' },
+    { value: 5, numeral: 'V' },
+    { value: 4, numeral: 'IV' },
+    { value: 3, numeral: 'III' },
+    { value: 2, numeral: 'II' },
+    { value: 1, numeral: 'I' },
+  ];
+  let result = '';
+  for (let i = 0; i < romanValues.length; i += 1) {
+    while (inputNum >= romanValues[i].value) {
+      result += romanValues[i].numeral;
+      inputNum -= romanValues[i].value;
+    }
+  }
+  return result;
 }
 
 /**
