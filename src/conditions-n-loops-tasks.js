@@ -355,8 +355,59 @@ function getBalanceIndex(arr) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  if (size <= 0) return [];
+
+  const matrix = new Array(size);
+  for (let i = 0; i < size; i += 1) {
+    matrix[i] = new Array(size);
+  }
+
+  let num = 1;
+  let top = 0;
+  let bottom = size - 1;
+  let left = 0;
+  let right = size - 1;
+  let direction = 0;
+  while (top <= bottom && left <= right) {
+    if (direction === 0) {
+      let i = left;
+      while (i <= right) {
+        matrix[top][i] = num;
+        num += 1;
+        i += 1;
+      }
+      top += 1;
+    } else if (direction === 1) {
+      let i = top;
+      while (i <= bottom) {
+        matrix[i][right] = num;
+        num += 1;
+        i += 1;
+      }
+      right -= 1;
+    } else if (direction === 2) {
+      let i = right;
+      while (i >= left) {
+        matrix[bottom][i] = num;
+        num += 1;
+        i -= 1;
+      }
+      bottom -= 1;
+    } else if (direction === 3) {
+      let i = bottom;
+      while (i >= top) {
+        matrix[i][left] = num;
+        num += 1;
+        i -= 1;
+      }
+      left += 1;
+    }
+
+    direction = (direction + 1) % 4;
+  }
+
+  return matrix;
 }
 
 /**
@@ -374,8 +425,30 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const arr = matrix;
+
+  const size = matrix.length;
+  const newMatrix = new Array(size);
+  for (let i = 0; i < size; i += 1) {
+    newMatrix[i] = new Array(size);
+    for (let j = 0; j < size; j += 1) {
+      newMatrix[i][j] = 0;
+    }
+  }
+
+  for (let i = size - 1; i >= 0; i -= 1) {
+    for (let j = 0; j < size; j += 1) {
+      newMatrix[j][size - 1 - i] = matrix[i][j];
+    }
+  }
+
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < size; j += 1) {
+      arr[i][j] = newMatrix[i][j];
+    }
+  }
+  return arr;
 }
 
 /**
@@ -392,8 +465,34 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const sortArr = arr;
+  const sortFunction = (arr2, leftItem = 0, rightItem = arr2.length - 1) => {
+    if (leftItem >= rightItem) return;
+
+    const middleItem = arr2[Math.floor((leftItem + rightItem) / 2)];
+
+    let i = leftItem;
+    let j = rightItem;
+
+    while (i <= j) {
+      while (arr2[i] < middleItem) i += 1;
+      while (arr2[j] > middleItem) j -= 1;
+
+      if (i <= j) {
+        [sortArr[i], sortArr[j]] = [arr2[j], arr2[i]];
+        i += 1;
+        j -= 1;
+      }
+    }
+
+    if (leftItem < j) sortFunction(arr2, leftItem, j);
+    if (i < rightItem) sortFunction(arr2, i, rightItem);
+  };
+
+  sortFunction(sortArr);
+
+  return sortArr;
 }
 
 /**
@@ -413,8 +512,26 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  if (str.length === 0 || iterations <= 0) return str;
+
+  let result = str;
+
+  for (let i = 0; i < iterations; i += 1) {
+    let evenChars = '';
+    let oddChars = '';
+
+    for (let j = 0; j < result.length; j += 1) {
+      if (j % 2 === 0) evenChars += result[j];
+      else oddChars += result[j];
+    }
+
+    result = evenChars + oddChars;
+
+    if (result === str) return shuffleChar(str, iterations % (i + 1));
+  }
+
+  return result;
 }
 
 /**
@@ -434,8 +551,52 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  if (number < 10) return number;
+
+  const digitsArr = [];
+  let num = number;
+
+  while (num > 0) {
+    digitsArr.unshift(num % 10);
+    num = Math.floor(num / 10);
+  }
+
+  let pivotIndex = digitsArr.length - 2;
+  while (
+    pivotIndex >= 0 &&
+    digitsArr[pivotIndex] >= digitsArr[pivotIndex + 1]
+  ) {
+    pivotIndex -= 1;
+  }
+
+  if (pivotIndex < 0) return number;
+
+  let swapIndex = digitsArr.length - 1;
+  while (digitsArr[swapIndex] <= digitsArr[pivotIndex]) {
+    swapIndex -= 1;
+  }
+
+  let temp = digitsArr[pivotIndex];
+  digitsArr[pivotIndex] = digitsArr[swapIndex];
+  digitsArr[swapIndex] = temp;
+
+  let left = pivotIndex + 1;
+  let right = digitsArr.length - 1;
+  while (left < right) {
+    temp = digitsArr[left];
+    digitsArr[left] = digitsArr[right];
+    digitsArr[right] = temp;
+    left += 1;
+    right -= 1;
+  }
+
+  let result = 0;
+  for (let k = 0; k < digitsArr.length; k += 1) {
+    result = result * 10 + digitsArr[k];
+  }
+
+  return result;
 }
 
 module.exports = {
